@@ -3,7 +3,8 @@ export function logIn(token, setToken) { //needs some finishing up
 }
 
 export function logOut(setToken) {
-
+    setToken(null);
+    localStorage.removeItem('token');
 }
 
 export function isLoggedIn(token) { // should be complete
@@ -11,10 +12,20 @@ export function isLoggedIn(token) { // should be complete
     else return false
 }
 
-export function makeHeaders(token) {
-    const header = {
-        'Content-Type': 'application/json',
-        'Authorization': token
-      }
-    return header;
+export function makeHeaders() {
+    const token = localStorage.getItem('token')
+    let headers = {};
+    if (token) {
+            headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    }
+    else {
+        headers = {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    return headers;
 }

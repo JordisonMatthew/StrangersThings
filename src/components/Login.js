@@ -3,22 +3,35 @@ import { Link } from 'react-router-dom';
 import {loginUser, registerUser} from './ajaxHelperFuncs'
 
 
-const Login = ({match, setToken}) => {
+const Login = ({match, setToken, history}) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-
+    
     return (
+        <>
+        <h1>Log In</h1>
         <form 
-        onSubmit={(event) => {
+        onSubmit={ async (event) => {
             event.preventDefault();
             
             if (match.url === '/register') {
-                registerUser(username, password, confirmPassword);
+                // Registers the user if password and confirm password match
+                await registerUser(username, password, confirmPassword);
+
+                // takes the user to the login page so that they can login
+                history.push('/login')
             }
             
             if (match.url === '/login') {
-                loginUser(username, password, setToken);
+                // logs the user in if everything is correct and
+                // add the token to local storage and updates state
+                const errorResult = await loginUser(username, password, setToken);
+
+                // takes user to their login page
+                if (errorResult === null) {
+                    history.push('/profile')
+                }
             }
         }}>
             <div className="form-group">
@@ -70,6 +83,7 @@ const Login = ({match, setToken}) => {
                         <Link to='/register'>Don't have an account?</Link>
                 }
         </form>
+        </>
     )
 }
 

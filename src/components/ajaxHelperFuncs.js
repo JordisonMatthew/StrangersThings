@@ -4,6 +4,8 @@
 const COHORT = '2107-CSU-RM-WEB-PT';
 const API = `https://strangers-things.herokuapp.com/api/${COHORT}`;
 
+import { makeHeaders } from "./helperFuncs";
+
 export async function registerUser(username, password, confirmPassword) {
     
     if (confirmPassword !== password) {
@@ -48,10 +50,15 @@ export async function loginUser(username, password, setToken)  {
 
         const result = await response.json();
         console.log(result);
+        if (result.error !== null) {
+            alert('incorrect username or password');
+            return;
+        }
         setToken(result.data.token);
-        console.log(username, password);
 
         localStorage.setItem("token", result.data.token);
+
+        return result.error;
     } catch(err) {
         console.error(err);
     }
@@ -67,4 +74,33 @@ export async function getPosts() {
         console.error(err);
     }
 
+}
+
+export async function getUserPosts() {
+    const headers = makeHeaders();
+    try {
+        const response = await fetch(`${API}/users/me`,{
+            headers
+        })
+        const result = await response.json();
+        console.log('user posts:',result);
+        return result;
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+export async function getUsername() {
+    const headers = makeHeaders();
+    console.log(headers);
+    try {
+        const response = await fetch(`${API}/users/me`,{
+            headers
+        })
+        const result = await response.json();
+        console.log(result);
+        return result.data.username;
+    } catch(err) {
+        console.error(err);
+    }
 }

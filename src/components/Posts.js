@@ -8,7 +8,6 @@ const Posts = () => {
     useEffect( async () => {
         const result = await getPosts();
         setPosts(result);
-        console.log(result)
     }, [])
     return (
         <div>
