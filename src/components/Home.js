@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from "react";
 import { getUser} from "./ajaxHelperFuncs";
 
+// Home page displays basic info like user name if they are signed in
 const Home = ({headers, history}) => {
     const [username, setUsername] = useState('');
 
+    // updates the username displayed whenever headers is updates
     useEffect( async () => {
         console.log(username);
 

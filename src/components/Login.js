@@ -2,9 +2,8 @@ import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import {loginUser, registerUser} from './ajaxHelperFuncs'
 
-
-const Login = ({match, setToken, history}) => {
-    const [username, setUsername] = useState('');
+// Logs the user into their account or registers their account
+const Login = ({match, setToken, history, username, setUsername}) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     
@@ -14,7 +13,8 @@ const Login = ({match, setToken, history}) => {
         <form 
         onSubmit={ async (event) => {
             event.preventDefault();
-            
+
+            // if the user is in the register page onSubmit will do this
             if (match.url === '/register') {
                 // Registers the user if password and confirm password match
                 await registerUser(username, password, confirmPassword);
@@ -23,11 +23,13 @@ const Login = ({match, setToken, history}) => {
                 history.push('/login')
             }
             
+            // if the user is in the login page onSubmit does this
             if (match.url === '/login') {
                 // logs the user in if everything is correct and
                 // add the token to local storage and updates state
                 const errorResult = await loginUser(username, password, setToken);
 
+                // If everything goes well
                 // takes user to their login page
                 if (errorResult === null) {
                     history.push('/profile')
@@ -76,7 +78,7 @@ const Login = ({match, setToken, history}) => {
                 }
 
                 <button type="submit" className="btn btn-primary">Submit</button>
-                {
+                { // Adjust the link displayed to the user depending on the page they are on
                     match.url === '/register'?
                         <Link to='/login'>Already have an account?</Link>
                         :

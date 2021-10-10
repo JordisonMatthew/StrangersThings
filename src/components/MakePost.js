@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 
 import { makePost, getPosts, editPost } from './ajaxHelperFuncs';
 
+// Allows the user to make a new post
 const MakePost = ({headers, history, setPosts, selectedPost, match}) => {
     const [title, setTitle] = useState(selectedPost? selectedPost.title : '');
     const [description, setDescription] = useState(selectedPost? selectedPost.description : '');
@@ -13,13 +14,14 @@ const MakePost = ({headers, history, setPosts, selectedPost, match}) => {
     useEffect(() => {
 
     }, [headers])
-    return (
+    return ( // Header displays differently depending on the value of selectedPost
         <>
             <h1>{!selectedPost? 'add a new post' : 'edit a post'}</h1>
             <form
             onSubmit={async (event) => {
                 event.preventDefault();
 
+                // Edits a post if selectedPost is not null
                 if (selectedPost) {
                     const result = await editPost(headers, match.params.postId, title, description, location, willDeliver, price);
 
@@ -31,11 +33,15 @@ const MakePost = ({headers, history, setPosts, selectedPost, match}) => {
                     return
                 }
 
-
+                // Stops the submit conditions if the user is not logged in
                 if (!localStorage.getItem('token')) {
                     alert('Please sign in or sign up before creating a post');
                     return;
                 }
+                // Doesn't allow the submitting of a post until it has all the
+                // required info
+                // Otherwise it makes the post and then updates the state of posts
+                // and takes the user to the posts page
                 if (!title || !description || !price) {
                     alert('Missing required information')
                 }

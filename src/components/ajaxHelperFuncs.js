@@ -4,7 +4,7 @@
 const COHORT = '2107-CSU-RM-WEB-PT';
 const API = `https://strangers-things.herokuapp.com/api/${COHORT}`;
 
-
+// registers the user in a new account
 export async function registerUser(username, password, confirmPassword) {
     
     if (confirmPassword !== password) {
@@ -32,6 +32,7 @@ export async function registerUser(username, password, confirmPassword) {
         
 }
 
+// Logs the user into an existing account
 export async function loginUser(username, password, setToken)  {
     try {
         const response = await fetch(`${API}/users/login`, {
@@ -64,6 +65,7 @@ export async function loginUser(username, password, setToken)  {
 
 }
 
+// gets the data for all the posts in the cohort name of the api
 export async function getPosts(headers) {
     try {
         const response = await fetch(`${API}/posts`, {
@@ -78,6 +80,7 @@ export async function getPosts(headers) {
 
 }
 
+// Gets the users relevant data like messages and their posts
 export async function getUser(headers) {
     try {
         const response = await fetch(`${API}/users/me`,{
@@ -91,6 +94,7 @@ export async function getUser(headers) {
     }
 }
 
+// Makes a new post in the api
 export async function makePost(headers, title, description, location, willDeliver, price) {
     let post = {};
     if (location) {
@@ -124,6 +128,7 @@ export async function makePost(headers, title, description, location, willDelive
     }
 }
 
+// Deletes a post in the api
 export async function deletePost(headers, postId) {
     try {
         const response = await fetch(`${API}/posts/${postId}`, {
@@ -140,6 +145,7 @@ export async function deletePost(headers, postId) {
     }
 }
 
+// edits a post in the api
 export async function editPost(headers, postId, title, description, location, willDeliver, price) {
     const post = {
         title: title,
@@ -167,7 +173,7 @@ export async function editPost(headers, postId, title, description, location, wi
 
 }
 
-
+// sends a message to another user
 export async function sendMessage(headers, postId, message) {
     try {
         const response = await fetch(`${API}/posts/${postId}/messages`, {
