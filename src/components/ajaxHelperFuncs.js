@@ -118,6 +118,70 @@ export async function makePost(headers, title, description, location, willDelive
         })
         const result = await response.json();
         console.log(result);
+        return result;
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+export async function deletePost(headers, postId) {
+    try {
+        const response = await fetch(`${API}/posts/${postId}`, {
+            method: "DELETE",
+            headers
+        })
+
+        const result = await response.json();
+
+        console.log(result);
+        return result;
+    } catch(err) {
+        console.error(err);
+    }
+}
+
+export async function editPost(headers, postId, title, description, location, willDeliver, price) {
+    const post = {
+        title: title,
+        description: description,
+        price: price,
+        location: location,
+        willDeliver: willDeliver
+    }
+
+    try {
+        const response = await fetch(`${API}/posts/${postId}`, {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({
+                post
+            })
+        })
+
+        const result = await response.json();
+        console.log(result);
+        return result;
+    } catch(err) {
+        console.error(err);
+    }
+
+}
+
+
+export async function sendMessage(headers, postId, message) {
+    try {
+        const response = await fetch(`${API}/posts/${postId}/messages`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                message: {
+                  content: message
+                }
+              })
+            })
+        const result = await response.json();
+        console.log(result);
+        return result;
     } catch(err) {
         console.error(err);
     }

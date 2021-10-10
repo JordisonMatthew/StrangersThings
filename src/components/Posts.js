@@ -3,6 +3,10 @@ import {Link} from 'react-router-dom';
 import { getPostById } from './helperFuncs';
 
 const Posts = ({loggedIn, history, posts, setSelectedPost}) => {
+
+    useEffect(() => {
+
+    }, [posts]);
     
     return (
         <div>

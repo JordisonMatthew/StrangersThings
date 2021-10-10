@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
 
-import { makePost } from './ajaxHelperFuncs';
+import { makePost, getPosts, editPost } from './ajaxHelperFuncs';
 
-const MakePost = ({headers, history}) => {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
-    const [location, setLocation] = useState('');
-    const [willDeliver, setWillDeliver] = useState(false);
+const MakePost = ({headers, history, setPosts, selectedPost, match}) => {
+    const [title, setTitle] = useState(selectedPost? selectedPost.title : '');
+    const [description, setDescription] = useState(selectedPost? selectedPost.description : '');
+    const [price, setPrice] = useState(selectedPost? selectedPost.price : '');
+    const [location, setLocation] = useState(selectedPost? selectedPost.location : '');
+    const [willDeliver, setWillDeliver] = useState(selectedPost? selectedPost.willDeliver : false);
 
     // This useEffect just updates the page when headers is updated
     useEffect(() => {
@@ -15,10 +15,23 @@ const MakePost = ({headers, history}) => {
     }, [headers])
     return (
         <>
-            <h1>Add a New Post</h1>
+            <h1>{!selectedPost? 'add a new post' : 'edit a post'}</h1>
             <form
             onSubmit={async (event) => {
                 event.preventDefault();
+
+                if (selectedPost) {
+                    const result = await editPost(headers, match.params.postId, title, description, location, willDeliver, price);
+
+                    alert(`Edited ${result.success? 'successfully' : 'unsuccessfully'}`);
+
+                    await getPosts(headers).then(result => setPosts(result));
+
+                    history.push('/posts/postId');
+                    return
+                }
+
+
                 if (!localStorage.getItem('token')) {
                     alert('Please sign in or sign up before creating a post');
                     return;
@@ -27,7 +40,10 @@ const MakePost = ({headers, history}) => {
                     alert('Missing required information')
                 }
                 else {
-                    await makePost(headers, title, description, location, willDeliver, price);
+                    const result = await makePost(headers, title, description, location, willDeliver, price);
+                    alert(`Posted ${result.success? 'successfully' : 'unsuccessfully'}`);
+
+                    await getPosts(headers).then(result => setPosts(result));
 
                     history.push('/posts');
                 }

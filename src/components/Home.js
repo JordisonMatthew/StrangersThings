@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { getUser} from "./ajaxHelperFuncs";
 
-const Home = ({headers}) => {
+const Home = ({headers, history}) => {
     const [username, setUsername] = useState('');
 
     useEffect( async () => {
@@ -16,7 +16,13 @@ const Home = ({headers}) => {
         <>
     <h1>Welcome to Stranger's Things!</h1>
     {username?
+        <>
         <h3>Logged in as {username}</h3>
+        <button
+        onClick={() => {
+            history.push('/profile');
+        }}>Profile</button>
+        </>
         :
         null
     }

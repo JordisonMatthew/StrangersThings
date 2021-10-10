@@ -53,8 +53,9 @@ const App = () => {
           <Route path='/register' render={(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
           <Route exact path='/posts' render={(routeProps) => <Posts {...routeProps} headers={headers} loggedIn={loggedIn} setSelectedPost={setSelectedPost} posts={posts}/>}></Route>
           <Route path='/profile' render={(routeProps) => <Profile {...routeProps} headers={headers}/>}></Route>
-          <Route exact path='/posts/add' render={(routeProps) => <MakePost {...routeProps} headers={headers}/>}></Route>
-          <Route exact path='/posts/:postId' render={(routeProps) => <SinglePost {...routeProps} selectedPost={selectedPost} setSelectedPost={setSelectedPost} posts={posts}/>}></Route>
+          <Route path='/posts/add' render={(routeProps) => <MakePost {...routeProps} headers={headers} setPosts={setPosts}/>}></Route>
+          <Route path='/posts/:postId' render={(routeProps) => <SinglePost {...routeProps} selectedPost={selectedPost} setSelectedPost={setSelectedPost} posts={posts} headers={headers} setPosts={setPosts}/>}></Route>
+          <Route exact path='/posts/:postId/edit' render={(routeProps) => <MakePost {...routeProps} headers={headers} setPosts={setPosts} selectedPost={selectedPost}/>}></Route>
         </div>
       </div>
     </Router>
