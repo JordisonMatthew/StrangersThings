@@ -1,19 +1,18 @@
 import React, {useEffect, useState} from "react";
-import { getUserPosts } from "./ajaxHelperFuncs";
+import { getUser } from "./ajaxHelperFuncs";
 import { makeHeaders } from "./helperFuncs";
-const Profile = ({token}) => {
+const Profile = ({headers}) => {
     const [posts, setPosts] = useState([]);
     const [messages, setMessages] = useState([]);
 
     useEffect( async () => {
-        const headers = makeHeaders();
-        const result = await getUserPosts(headers);
+        const result = await getUser(headers);
         console.log('user Posts in profile:', result);
         if (!result.error) {
             setPosts(result.data.posts);
             setMessages(result.data.messages);
         }
-    }, [])
+    }, [headers])
     return (
         <>
         {posts?

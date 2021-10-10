@@ -1,6 +1,3 @@
-export function logIn(token, setToken) { //needs some finishing up
-    localStorage.setItem('token', token)
-}
 
 export function logOut(setToken) {
     setToken(null);
@@ -12,8 +9,7 @@ export function isLoggedIn(token) { // should be complete
     else return false
 }
 
-export function makeHeaders() {
-    const token = localStorage.getItem('token')
+export function makeHeaders(token) {
     let headers = {};
     if (token) {
             headers = {
@@ -28,4 +24,11 @@ export function makeHeaders() {
     }
 
     return headers;
+}
+
+export function getPostById(postId, posts) {
+    const myPost = posts.find((post) => {
+        return postId === post._id;
+    })
+    return myPost || {};
 }

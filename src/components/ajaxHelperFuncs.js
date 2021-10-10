@@ -4,7 +4,6 @@
 const COHORT = '2107-CSU-RM-WEB-PT';
 const API = `https://strangers-things.herokuapp.com/api/${COHORT}`;
 
-import { makeHeaders } from "./helperFuncs";
 
 export async function registerUser(username, password, confirmPassword) {
     
@@ -65,10 +64,13 @@ export async function loginUser(username, password, setToken)  {
 
 }
 
-export async function getPosts() {
+export async function getPosts(headers) {
     try {
-        const response = await fetch(`${API}/posts`)   
+        const response = await fetch(`${API}/posts`, {
+            headers
+        })   
         const result = await response.json();
+        console.log('posts', result.data.posts);
         return result.data.posts;
     } catch (err) {
         console.error(err);
@@ -76,8 +78,7 @@ export async function getPosts() {
 
 }
 
-export async function getUserPosts() {
-    const headers = makeHeaders();
+export async function getUser(headers) {
     try {
         const response = await fetch(`${API}/users/me`,{
             headers
@@ -90,16 +91,33 @@ export async function getUserPosts() {
     }
 }
 
-export async function getUsername() {
-    const headers = makeHeaders();
-    console.log(headers);
+export async function makePost(headers, title, description, location, willDeliver, price) {
+    let post = {};
+    if (location) {
+        post = {
+            title: title,
+            description: description,
+            price: price,
+            location: location,
+            willDeliver: willDeliver}
+    }
+    else {
+        post = {
+            title: title,
+            description: description,
+            price: price,
+            willDeliver: willDeliver}
+        }
     try {
-        const response = await fetch(`${API}/users/me`,{
-            headers
+        const response = await fetch(`${API}/posts`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                post
+            })
         })
         const result = await response.json();
         console.log(result);
-        return result.data.username;
     } catch(err) {
         console.error(err);
     }

@@ -1,15 +1,17 @@
 import React, {useState, useEffect} from "react";
-import { getUsername } from "./ajaxHelperFuncs";
-import { makeHeaders } from "./helperFuncs";
+import { getUser} from "./ajaxHelperFuncs";
+
 const Home = ({headers}) => {
     const [username, setUsername] = useState('');
 
     useEffect( async () => {
         console.log(username);
 
-        const result = await getUsername();
-        setUsername(result);
-    }, [])
+        const result = await getUser(headers);
+        if (!result.error) {
+            setUsername(result.data.username);
+        }
+    }, [headers])
     return (
         <>
     <h1>Welcome to Stranger's Things!</h1>

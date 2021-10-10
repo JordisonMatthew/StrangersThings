@@ -2,20 +2,29 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { isLoggedIn, logOut, makeHeaders } from './components/helperFuncs';
-import {Login, Posts, Home, Profile} from './components/index'
+import {getPosts} from './components/ajaxHelperFuncs';
+
+import {Login, Posts, Home, Profile, MakePost, SinglePost} from './components/index'
 
 const App = () => {
-  const [token, setToken] = useState(null);
-  const [headers, setHeaders] = useState(null);
-  
-  useEffect(() => {
-    const localToken = localStorage.getItem("token");
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [headers, setHeaders] = useState({'Content-Type': 'application/json'});
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn(token));
+  const [selectedPost, setSelectedPost] = useState({});
+  const [posts, setPosts] = useState([]);
 
-    if (localToken) {
-      setToken(localToken);
-      setHeaders(makeHeaders());
-    }
-  }, [])
+  
+
+  useEffect(() => {
+   setLoggedIn(isLoggedIn(token));
+   setHeaders(makeHeaders(token));
+
+  }, [token])
+
+  useEffect(async() => {
+    await getPosts(headers).then(result => setPosts(result));
+  }, [headers])
+  
   return (
     <Router>
       <div>
@@ -42,8 +51,10 @@ const App = () => {
           <Route exact path='/' render={(routeProps) => <Home {...routeProps} headers={headers}/>}></Route>
           <Route path='/login' render={(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
           <Route path='/register' render={(routeProps) => <Login {...routeProps} setToken={setToken}/>}></Route>
-          <Route path='/posts' render={(routeProps) => <Posts {...routeProps}/>}></Route>
-          <Route path='/profile' render={(routeProps) => <Profile {...routeProps} token={token}/>}></Route>
+          <Route exact path='/posts' render={(routeProps) => <Posts {...routeProps} headers={headers} loggedIn={loggedIn} setSelectedPost={setSelectedPost} posts={posts}/>}></Route>
+          <Route path='/profile' render={(routeProps) => <Profile {...routeProps} headers={headers}/>}></Route>
+          <Route exact path='/posts/add' render={(routeProps) => <MakePost {...routeProps} headers={headers}/>}></Route>
+          <Route exact path='/posts/:postId' render={(routeProps) => <SinglePost {...routeProps} selectedPost={selectedPost} setSelectedPost={setSelectedPost} posts={posts}/>}></Route>
         </div>
       </div>
     </Router>
